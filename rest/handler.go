@@ -33,12 +33,12 @@ func echoWithMetrics(w http.ResponseWriter, r *http.Request, customMetrics *Cust
 	if len(msg) == 0 {
 		logger.Log.Infof("[REST] Echo of default msg '%s'", msgDefault)
 		w.Write([]byte(msgDefault))
-		go customMetrics.incrementOpsProcessed()
+		go customMetrics.incrementOpsProcessed("default")
 		go customMetrics.incrementEchoRequests()
-		} else {
-			logger.Log.Infof("[REST] Echo of msg '%s'", msg)
-			w.Write([]byte(msg))
-			go customMetrics.incrementOpsProcessed()
-			go customMetrics.incrementEchoMsgRequests()
+	} else {
+		logger.Log.Infof("[REST] Echo of msg '%s'", msg)
+		w.Write([]byte(msg))
+		go customMetrics.incrementOpsProcessed("msg")
+		go customMetrics.incrementEchoMsgRequests()
 	}
 }

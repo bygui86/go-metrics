@@ -1,15 +1,27 @@
 
 # Go exporting metrics sample project
 
-## version 0.0.1
+## Notice
+
+Here we use `promauto` module instead of normal `prometheus` one, so we can avoid to manually register the Prometheus collector with kind of following command
+
+```
+prometheus.MustRegister(myCustomMetric)
+```
+
+---
+
+## Versions
+
+### version 0.0.1
 - [x] simple rest apis
 - [x] default metrics
 
-## version 0.0.2
+### version 0.0.2
 - [x] multistage dockerfile
 - [x] kubernetes manifests
 
-## version 0.0.3
+### version 0.0.3
 - [x] custom metrics
 
 ---

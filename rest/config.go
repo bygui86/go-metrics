@@ -20,10 +20,12 @@ const (
 	restShutdownTimeoutDefault = 15
 
 	// Custom metrics -
-	opsProcessedMetricName = "echoserver_processed_ops_total"
-	opsProcessedMetricHelp = "Total number of processed operations"
-	echoRequestsMetricName = "echoserver_echo_requests_total"
-	echoRequestsMetricHelp = "Total number of default echo requests"
+	metricsGeneralNamespace   = "general"
+	metricsRestSubsystem      = "rest"
+	opsProcessedMetricName    = "echoserver_processed_ops_total"
+	opsProcessedMetricHelp    = "Total number of processed operations"
+	echoRequestsMetricName    = "echoserver_echo_requests_total"
+	echoRequestsMetricHelp    = "Total number of default echo requests"
 	echoMsgRequestsMetricName = "echoserver_echo_msg_requests_total"
 	echoMsgRequestsMetricHelp = "Total number of echo requests with messages"
 )
@@ -38,8 +40,8 @@ type Config struct {
 
 // CustomMetrics - Container object for custom metrics
 type CustomMetrics struct {
-	opsProcessed prometheus.Counter
-	echoRequests prometheus.Counter
+	opsProcessed    *prometheus.CounterVec
+	echoRequests    prometheus.Counter
 	echoMsgRequests prometheus.Counter
 }
 
@@ -60,25 +62,34 @@ func newConfig() (*Config, error) {
 func newCustomMetrics() *CustomMetrics {
 
 	return &CustomMetrics{
-		opsProcessed: promauto.NewCounter(prometheus.CounterOpts{
-			Name: opsProcessedMetricName,
-			Help: opsProcessedMetricHelp,
-		}),
+		opsProcessed: promauto.NewCounterVec(
+			prometheus.CounterOpts{
+				Namespace: metricsGeneralNamespace,
+				Subsystem: metricsRestSubsystem,
+				Name:      opsProcessedMetricName,
+				Help:      opsProcessedMetricHelp,
+			},
+			[]string{"type"},
+		),
 		echoRequests: promauto.NewCounter(prometheus.CounterOpts{
-			Name: echoRequestsMetricName,
-			Help: echoRequestsMetricHelp,
+			Namespace: metricsGeneralNamespace,
+			Subsystem: metricsRestSubsystem,
+			Name:      echoRequestsMetricName,
+			Help:      echoRequestsMetricHelp,
 		}),
 		echoMsgRequests: promauto.NewCounter(prometheus.CounterOpts{
-			Name: echoMsgRequestsMetricName,
-			Help: echoMsgRequestsMetricHelp,
+			Namespace: metricsGeneralNamespace,
+			Subsystem: metricsRestSubsystem,
+			Name:      echoMsgRequestsMetricName,
+			Help:      echoMsgRequestsMetricHelp,
 		}),
 	}
 }
 
 // IncrementOpsProcessed - Increment total number of processed operations
-func (cm *CustomMetrics) incrementOpsProcessed() {
+func (cm *CustomMetrics) incrementOpsProcessed(opType string) {
 
-	cm.opsProcessed.Inc()
+	cm.opsProcessed.WithLabelValues(opType).Inc()
 }
 
 // incrementEchoRequests - Increment total number of default echo requests
