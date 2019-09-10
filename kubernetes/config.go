@@ -1,20 +1,20 @@
 package kubernetes
 
 import (
-	"github.com/bygui86/go-metrics/utils"
-	"github.com/bygui86/go-metrics/utils/logger"
+	"github.com/bygui86/go-metrics/envvars"
+	"github.com/bygui86/go-metrics/logging"
 )
 
 const (
 	// Environment variables -
-	kubeHostEnvVar            = "ECHOSERVER_KUBE_HOST"
-	kubePortEnvVar            = "ECHOSERVER_KUBE_PORT"
-	kubeShutdownTimeoutEnvVar = "ECHOSERVER_KUBE_SHUTDOWN_TIMEOUT"
+	kubeHostEnvVar            = "KUBE_HOST"
+	kubePortEnvVar            = "KUBE_PORT"
+	kubeShutdownTimeoutEnvVar = "KUBE_SHUTDOWN_TIMEOUT"
 
 	// Default values -
 	// host values: '0.0.0.0' for kubernetes, 'localhost' for local
 	kubeHostDefault     = "localhost"
-	kubePortDefault     = 7090
+	kubePortDefault     = 9091
 	kubeShutdownTimeout = 15
 )
 
@@ -28,11 +28,11 @@ type Config struct {
 // newConfig -
 func newConfig() (*Config, error) {
 
-	logger.Log.Debugln("[KUBERNETES] Setup new Kubernetes config...")
+	logging.Log.Debugln("[KUBERNETES] Setup new Kubernetes config...")
 
 	return &Config{
-		RestHost:        utils.GetStringEnv(kubeHostEnvVar, kubeHostDefault),
-		RestPort:        utils.GetIntEnv(kubePortEnvVar, kubePortDefault),
-		ShutdownTimeout: utils.GetIntEnv(kubeShutdownTimeoutEnvVar, kubeShutdownTimeout),
+		RestHost:        envvars.GetStringEnv(kubeHostEnvVar, kubeHostDefault),
+		RestPort:        envvars.GetIntEnv(kubePortEnvVar, kubePortDefault),
+		ShutdownTimeout: envvars.GetIntEnv(kubeShutdownTimeoutEnvVar, kubeShutdownTimeout),
 	}, nil
 }

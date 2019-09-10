@@ -12,10 +12,14 @@ spec:
     group: sample
   ports:
     - name: http
-      port: 7001
-      targetPort: 7001
+      port: 8080
+      targetPort: 8080
       protocol: TCP
     - name: http-metrics
-      port: 7090
-      targetPort: 7090
+      port: 9090
+      targetPort: 9090
+      protocol: TCP
+    - name: http-probes
+      port: 9091
+      targetPort: 9091
       protocol: TCP

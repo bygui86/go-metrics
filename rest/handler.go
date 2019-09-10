@@ -3,42 +3,37 @@ package rest
 import (
 	"net/http"
 
-	"github.com/bygui86/go-metrics/utils/logger"
+	"github.com/bygui86/go-metrics/monitoring"
+	"github.com/bygui86/go-metrics/logging"
+
 	"github.com/gorilla/mux"
 )
 
 const (
-	msgDefault = "Hello world!"
+	defaultMsg = "Hello world!"
 )
 
-func echo(w http.ResponseWriter, r *http.Request) {
+// echo -
+func echo(w http.ResponseWriter, r *http.Request, customMetrics monitoring.ICustomMetrics) {
 
 	vars := mux.Vars(r)
 	msg := vars["msg"]
 
 	if len(msg) == 0 {
-		logger.Log.Infof("[REST] Echo of default msg '%s'", msgDefault)
-		w.Write([]byte(msgDefault))
+		logging.Log.Infof("[REST] Echo of default msg '%s'", defaultMsg)
+		w.Write([]byte(defaultMsg))
 	} else {
-		logger.Log.Infof("[REST] Echo of msg '%s'", msg)
+		logging.Log.Infof("[REST] Echo of msg '%s'", msg)
 		w.Write([]byte(msg))
 	}
+
+	go updateCustomMetrics(customMetrics)
 }
 
-func echoWithMetrics(w http.ResponseWriter, r *http.Request, customMetrics *CustomMetrics) {
+// updateCustomMetrics -
+func updateCustomMetrics(customMetrics monitoring.ICustomMetrics) {
 
-	vars := mux.Vars(r)
-	msg := vars["msg"]
-
-	if len(msg) == 0 {
-		logger.Log.Infof("[REST] Echo of default msg '%s'", msgDefault)
-		w.Write([]byte(msgDefault))
-		go customMetrics.incrementOpsProcessed("default")
-		go customMetrics.incrementEchoRequests()
-	} else {
-		logger.Log.Infof("[REST] Echo of msg '%s'", msg)
-		w.Write([]byte(msg))
-		go customMetrics.incrementOpsProcessed("msg")
-		go customMetrics.incrementEchoMsgRequests()
+	if customMetrics != nil {
+		customMetrics.IncreaseCounter(opsProcessedKey)
 	}
 }

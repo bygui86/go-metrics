@@ -1,12 +1,14 @@
 
-FROM golang:1.12-stretch AS gobuilder
+FROM golang:1.13-buster AS gobuilder
 
 WORKDIR /go/src/github.com/bygui86/go-metrics
 COPY . .
 
 ENV GO111MODULE=on
+ENV CGO_ENABLED=0
+ENV GOOS=linux
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /bin/app .
+RUN go build -a -installsuffix cgo -o /bin/app .
 
 # ---
 
@@ -15,18 +17,13 @@ FROM alpine
 RUN apk update --no-cache
 RUN apk add --no-cache bash
 RUN apk add --no-cache curl
-# RUN apk add --no-cache ca-certificates
 
 WORKDIR /usr/bin/
 COPY --from=gobuilder /bin/app .
-# COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-# kubernetes probes
-EXPOSE 7090
-# monitoring
-EXPOSE 7091
-# rest
-EXPOSE 7001
+EXPOSE 8080
+EXPOSE 9090
+EXPOSE 9091
 
 USER 1001
 

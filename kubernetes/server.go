@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/bygui86/go-metrics/utils/logger"
+	"github.com/bygui86/go-metrics/logging"
 
 	"github.com/gorilla/mux"
 )
@@ -21,7 +21,7 @@ type KubeServer struct {
 // NewKubeServer - Create new Kubernetes REST server
 func NewKubeServer() (*KubeServer, error) {
 
-	logger.Log.Infoln("[KUBERNETES] Setup new REST server...")
+	logging.Log.Infoln("[KUBERNETES] Setup new REST server...")
 
 	// create config
 	cfg, err := newConfig()
@@ -45,7 +45,7 @@ func NewKubeServer() (*KubeServer, error) {
 // newRouter -
 func newRouter() *mux.Router {
 
-	logger.Log.Debugln("[KUBERNETES] Setup new Router config...")
+	logging.Log.Debugln("[KUBERNETES] Setup new Router config...")
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/live", livenessHandler)
@@ -56,7 +56,7 @@ func newRouter() *mux.Router {
 // newHttpServer -
 func newHttpServer(host string, port int, router *mux.Router) *http.Server {
 
-	logger.Log.Debugf("[KUBERNETES] Setup new HTTP server on port %d...", port)
+	logging.Log.Debugf("[KUBERNETES] Setup new HTTP server on port %d...", port)
 
 	return &http.Server{
 		Addr:    host + ":" + strconv.Itoa(port),
@@ -71,22 +71,22 @@ func newHttpServer(host string, port int, router *mux.Router) *http.Server {
 // Start - Start Kubernetes REST server
 func (s *KubeServer) Start() {
 
-	logger.Log.Infoln("[KUBERNETES] Start REST server...")
+	logging.Log.Infoln("[KUBERNETES] Start REST server...")
 
 	// TODO add a channel to communicate if everything is right
 	go func() {
 		if err := s.HttpServer.ListenAndServe(); err != nil {
-			logger.Log.Errorln("[KUBERNETES] Error starting REST server:", err)
+			logging.Log.Errorln("[KUBERNETES] Error starting REST server:", err)
 		}
 	}()
 
-	logger.Log.Infoln("[KUBERNETES] REST server listen on port", s.Config.RestPort)
+	logging.Log.Infoln("[KUBERNETES] REST server listen on port", s.Config.RestPort)
 }
 
 // Shutdown - Shutdown Kubernetes REST server
 func (s *KubeServer) Shutdown() {
 
-	logger.Log.Warnln("[KUBERNETES] Shutdown REST server...")
+	logging.Log.Warnln("[KUBERNETES] Shutdown REST server...")
 	if s.HttpServer != nil {
 		// create a deadline to wait for.
 		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(s.Config.ShutdownTimeout)*time.Second)

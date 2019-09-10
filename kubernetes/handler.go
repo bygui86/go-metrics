@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/bygui86/go-metrics/utils/logger"
+	"github.com/bygui86/go-metrics/logging"
 )
 
 const (
@@ -17,7 +17,7 @@ const (
 
 func livenessHandler(w http.ResponseWriter, r *http.Request) {
 
-	logger.Log.Debugln("[KUBERNETES] Liveness probe invoked...")
+	logging.Log.Debugln("[KUBERNETES] Liveness probe invoked...")
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(
@@ -30,7 +30,7 @@ func livenessHandler(w http.ResponseWriter, r *http.Request) {
 
 func readynessHandler(w http.ResponseWriter, r *http.Request) {
 
-	logger.Log.Debugln("[KUBERNETES] Readyness probe invoked...")
+	logging.Log.Debugln("[KUBERNETES] Readyness probe invoked...")
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(

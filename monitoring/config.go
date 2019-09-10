@@ -1,20 +1,20 @@
 package monitoring
 
 import (
-	"github.com/bygui86/go-metrics/utils"
-	"github.com/bygui86/go-metrics/utils/logger"
+	"github.com/bygui86/go-metrics/envvars"
+	"github.com/bygui86/go-metrics/logging"
 )
 
 const (
 	// Environment variables -
-	monHostEnvVar            = "ECHOSERVER_MONITOR_HOST"
-	monPortEnvVar            = "ECHOSERVER_MONITOR_PORT"
-	monShutdownTimeoutEnvVar = "ECHOSERVER_MONITOR_SHUTDOWN_TIMEOUT"
+	monHostEnvVar            = "MONITOR_HOST"
+	monPortEnvVar            = "MONITOR_PORT"
+	monShutdownTimeoutEnvVar = "MONITOR_SHUTDOWN_TIMEOUT"
 
 	// Default values -
 	// host values: '0.0.0.0' for kubernetes, 'localhost' for local
 	monHostDefault     = "localhost"
-	monPortDefault     = 7091
+	monPortDefault     = 9090
 	monShutdownTimeout = 15
 )
 
@@ -28,11 +28,11 @@ type Config struct {
 // newConfig -
 func newConfig() (*Config, error) {
 
-	logger.Log.Debugln("[MONITORING] Setup new Monitoring config...")
+	logging.Log.Debugln("[MONITORING] Setup new Monitoring config...")
 
 	return &Config{
-		RestHost:        utils.GetStringEnv(monHostEnvVar, monHostDefault),
-		RestPort:        utils.GetIntEnv(monPortEnvVar, monPortDefault),
-		ShutdownTimeout: utils.GetIntEnv(monShutdownTimeoutEnvVar, monShutdownTimeout),
+		RestHost:        envvars.GetStringEnv(monHostEnvVar, monHostDefault),
+		RestPort:        envvars.GetIntEnv(monPortEnvVar, monPortDefault),
+		ShutdownTimeout: envvars.GetIntEnv(monShutdownTimeoutEnvVar, monShutdownTimeout),
 	}, nil
 }

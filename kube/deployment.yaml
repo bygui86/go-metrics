@@ -5,7 +5,7 @@ metadata:
   labels:
     app: echo-server
     group: sample
-    version: 0.0.1
+    version: 0.0.4
 spec:
   replicas: 1
   strategy:
@@ -17,30 +17,30 @@ spec:
     matchLabels:
       app: echo-server
       group: sample
-      version: 0.0.1
+      version: 0.0.4
   template:
     metadata:
       labels:
         app: echo-server
         group: sample
-        version: 0.0.1
+        version: 0.0.4
     spec:
       restartPolicy: Always
+      terminationGracePeriodSeconds: 15
       containers:
         - name: echo-server
-          image: echo-server:latest
-          # Kubernetes
-          # imagePullPolicy: Always
-          # Minikube
-          imagePullPolicy: IfNotPresent
-          # envFrom:
-            # - configMapRef:
-            #     name: echo-server
+          image: go-samples/echo-server:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: echo-server
           ports:
             - name: http
-              containerPort: 7001
+              containerPort: 8080
             - name: http-metrics
-              containerPort: 7090
+              containerPort: 9090
+            - name: http-probes
+              containerPort: 9091
           resources:
             limits:
               cpu: 250m
@@ -51,7 +51,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /live
-              port: 7090
+              port: 9091
             initialDelaySeconds: 15
             periodSeconds: 10
             timeoutSeconds: 3
@@ -60,10 +60,9 @@ spec:
           readinessProbe:
             httpGet:
               path: /ready
-              port: 7090
+              port: 9091
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 3
             successThreshold: 1
             failureThreshold: 3
-      terminationGracePeriodSeconds: 30
