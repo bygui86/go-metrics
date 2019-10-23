@@ -7,6 +7,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
+// WARN this object is not thread safe!
 // customMetrics - Container object for custom metrics
 type customMetrics struct {
 	counters   map[string]prometheus.Counter
