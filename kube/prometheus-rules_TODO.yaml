@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: echo-server
+  labels:
+    prometheus: k8s
+    role: alert-rules
+spec:
+  groups:
+    - name: custom.rules
+      rules:
+        - alert: EchoServerOverusing
+          annotations:
+            message: too many echo-server on kube cluster
+          expr: |
+            absent(up{job="echo-server"} == 5)
+          for: 1m
+          labels:
+            severity: critical

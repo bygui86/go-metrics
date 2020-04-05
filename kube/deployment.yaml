@@ -4,8 +4,7 @@ metadata:
   name: echo-server
   labels:
     app: echo-server
-    group: sample
-    version: 0.0.4
+    group: go-samples
 spec:
   replicas: 1
   strategy:
@@ -16,30 +15,28 @@ spec:
   selector:
     matchLabels:
       app: echo-server
-      group: sample
-      version: 0.0.4
+      group: go-samples
   template:
     metadata:
       labels:
         app: echo-server
-        group: sample
-        version: 0.0.4
+        group: go-samples
     spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 15
       containers:
         - name: echo-server
           image: go-samples/echo-server:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
                 name: echo-server
           ports:
             - name: http
               containerPort: 8080
-            - name: http-metrics
+            - name: metrics
               containerPort: 9090
-            - name: http-probes
+            - name: probes
               containerPort: 9091
           resources:
             limits:

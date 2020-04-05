@@ -1,5 +1,5 @@
 
-FROM golang:1.13-buster AS gobuilder
+FROM golang:1.14-buster AS gobuilder
 
 WORKDIR /go/src/github.com/bygui86/go-metrics
 COPY . .

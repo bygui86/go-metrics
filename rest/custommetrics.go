@@ -9,7 +9,7 @@ const (
 	metricsSubsystem = "rest"
 	// .. opsProcessed
 	opsProcessedKey  = "opsProcessed"
-	opsProcessedName = "total_processed_ops"
+	opsProcessedName = "processed_ops_total"
 	opsProcessedHelp = "Total number of processed operations"
 )
 
